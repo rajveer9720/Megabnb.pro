@@ -398,124 +398,132 @@ const contracts = new web3ss.eth.Contract(contractABI, contractAddress);
 
 
 const connectWalletBtn = document.getElementById('connectWalletBtn');
+const walletModal = document.getElementById('walletModal');
+const metamaskOption = document.getElementById('metamaskOption');
+const walletConnectOption = document.getElementById('walletConnectOption');
+const closePopupButton = document.getElementById('close-popup');
 
 let web3s;
 let connectedAccount = null;
 
-
-// const printABISummary = async (abi, contract) => {
-//   for (const item of abi) {
-//     if (item.type === 'function') {
-//       const inputTypes = item.inputs.map(input => input.type).join(', ');
-//       console.log(`Function: ${item.name}(${inputTypes})`);
-
-//       if (item.stateMutability === 'view' || item.stateMutability === 'pure') {
-//         try {
-//           let value;
-
-//           // If the function requires one input and it's an address, pass the staticUserAddress
-//           if (item.inputs.length === 1 && item.inputs[0].type === 'address') {
-//             value = await contract.methods[item.name](staticUserAddressss).call();
-//           } 
-//           // If the function has no inputs
-//           else if (item.inputs.length === 0) {
-//             value = await contract.methods[item.name]().call();
-//           } 
-//           // If the function requires inputs other than a single address, skip it
-//           else {
-//             console.log(`Skipping ${item.name} - requires complex inputs.`);
-//             continue;
-//           }
-
-//           console.log(`Value: ${value}`);
-//         } catch (err) {
-//           console.log(`Error calling ${item.name}:`, err);
-//         }
-//       } else {
-//         console.log(`Skipping ${item.name} - not a view or pure function.`);
-//       }
-//     } else if (item.type === 'event') {
-//       const inputTypes = item.inputs.map(input => `${input.type} ${input.name}`).join(', ');
-//       console.log(`Event: ${item.name}(${inputTypes})`);
-//     } else if (item.type === 'constructor') {
-//       const inputTypes = item.inputs.map(input => input.type).join(', ');
-//       console.log(`Constructor(${inputTypes})`);
-//     }
-//   }
-// };
-// printABISummary(contractABI, contracts);
-
 function setCookie(name, value, days) {
-  const date = new Date();
-  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-  const expires = "expires=" + date.toUTCString();
-  document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
 }
 
 function getCookie(name) {
-  const decodedCookie = decodeURIComponent(document.cookie);
-  const cookieArray = decodedCookie.split(';');
-  for (let i = 0; i < cookieArray.length; i++) {
-    let cookie = cookieArray[i].trim();
-    if (cookie.indexOf(name + "=") === 0) {
-      return cookie.substring(name.length + 1, cookie.length);
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookieArray = decodedCookie.split(';');
+    for (let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i].trim();
+        if (cookie.indexOf(name + "=") === 0) {
+            return cookie.substring(name.length + 1, cookie.length);
+        }
     }
-  }
-  return "";
+    return "";
 }
 
 function deleteCookie(name) {
-  document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 
-
 function clearAllCookies() {
-  const cookies = document.cookie.split(";");
+    const cookies = document.cookie.split(";");
 
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i];
-    const eqPos = cookie.indexOf("=");
-    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
-  }
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+    }
 }
 
 function checkPreviousConnection() {
-  const account = getCookie('connectedAccount');
-  if (account) {
-    connectedAccount = account;
-    initializeWeb3();
-    updateUIForConnectedWallet();
-  }
-}
-async function connectWallet() {
-  if (connectedAccount) {
-    disconnectWallet();
-    return;
-  }
-
-  if (typeof window.ethereum !== 'undefined') {
-    try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      web3s = new Web3(window.ethereum);
-      const accounts = await web3s.eth.getAccounts();
-      connectedAccount = accounts[0];
-
-      setCookie('connectedAccount', connectedAccount, 1);
-      updateUIForConnectedWallet();
-      window.location.reload();
-      // Set a flag before reloading
-      localStorage.setItem('showToastAfterReload', 'true');
-     
-
-      console.log('Connected to wallet:', connectedAccount);
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
+    const account = getCookie('connectedAccount');
+    if (account) {
+        connectedAccount = account;
+        initializeWeb3();
+        updateUIForConnectedWallet();
     }
-  } else {
-   
-  }
 }
+
+closePopupButton.addEventListener('click', () => {
+  walletModal.style.display = 'none';
+});
+
+function connectWallet() {
+    walletModal.style.display = 'flex'; // Show the wallet selection modal
+}
+
+function connectToMetaMask() {
+    if (typeof window.ethereum !== 'undefined') {
+        window.ethereum.request({ method: 'eth_requestAccounts' })
+            .then(accounts => {
+                web3s = new Web3(window.ethereum);
+                connectedAccount = accounts[0];
+                setCookie('connectedAccount', connectedAccount, 1);
+                updateUIForConnectedWallet();
+                walletModal.style.display = 'none'; // Hide the modal after connecting
+                console.log('Connected to MetaMask:', connectedAccount);
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Failed to connect MetaMask:', error);
+            });
+    } else {
+        alert('MetaMask is not installed. Please install MetaMask and try again.');
+    }
+}
+
+async function connectToWalletConnect() {
+    const provider = new WalletConnectProvider.default({
+        infuraId: "https://arbitrum-sepolia.infura.io/v3/10ea86c5db904f06b7c9b6676e5bbc5c" // Replace with your Infura project ID
+    });
+
+    try {
+        await provider.enable();
+        web3s = new Web3(provider);
+        const accounts = await web3s.eth.getAccounts();
+        connectedAccount = accounts[0];
+        setCookie('connectedAccount', connectedAccount, 1);
+        updateUIForConnectedWallet();
+        walletModal.style.display = 'none'; // Hide the modal after connecting
+        console.log('Connected to WalletConnect:', connectedAccount);
+        window.location.reload();
+      } catch (error) {
+        console.error('Failed to connect with WalletConnect:', error);
+    }
+}
+
+function disconnectWallet() {
+    connectedAccount = null;
+    connectWalletBtn.innerHTML = '<span>Connect Wallet</span>';
+    connectWalletBtn.onclick = connectWallet;
+
+    clearAllCookies(); // Clear all cookies on disconnect
+    deleteCookie('walletAddress');
+    localStorage.setItem('disconnectreload', 'true');
+    window.location.reload();
+}
+
+function initializeWeb3() {
+    web3s = new Web3(window.ethereum);
+}
+
+function updateUIForConnectedWallet() {
+    connectWalletBtn.innerHTML = `${connectedAccount.slice(0, 6)}...${connectedAccount.slice(-4)}`;
+    connectWalletBtn.onclick = disconnectWallet;
+}
+
+connectWalletBtn.onclick = connectWallet;
+metamaskOption.onclick = connectToMetaMask;
+walletConnectOption.onclick = connectToWalletConnect;
+
+checkPreviousConnection();
+
+
 window.addEventListener('load', () => {
   if (localStorage.getItem('showToastAfterReload') === 'true') {
     // Show the toast notification
@@ -648,23 +656,7 @@ async function withdrawmoney() {
     onClick: function() {} // Callback after click
   }).showToast();
 }
-// async function refferalCopied() {
-//   // Show success alert when wallet is connected
-//   Toastify({
-//     text: "Copied Refferal",
-//     duration: 3000,
-//     destination: "https://github.com/apvarun/toastify-js",
-//     newWindow: true,
-//     close: true,
-//     gravity: "bottom", // `top` or `bottom`
-//     position: "right", // `left`, `center` or `right`
-//     stopOnFocus: true, // Prevents dismissing of toast on hover
-//     style: {
-//       background: "linear-gradient(to right, #00b09b, #96c93d)",
-//     },
-//     onClick: function() {} // Callback after click
-//   }).showToast();
-// }
+
 async function withdrawmoneyfailed() {
   // Show success alert when wallet is connected
   Toastify({
@@ -683,33 +675,6 @@ async function withdrawmoneyfailed() {
   }).showToast();
 }
 
-function disconnectWallet() {
-  connectedAccount = null;
-  connectWalletBtn.innerHTML = '<span>Connect Wallet</span>';
-  connectWalletBtn.onclick = connectWallet;
-
-  clearAllCookies(); // Clear all cookies on disconnect
-  deleteCookie('walletAddress');
-  localStorage.setItem('disconnectreload', 'true');
-window.location.reload();
-  // Show alert when wallet is disconnected
-
-
-
-}
-
-function initializeWeb3() {
-  web3s = new Web3(window.ethereum);
-}
-
-function updateUIForConnectedWallet() {
-  connectWalletBtn.innerHTML = `${connectedAccount.slice(0, 6)}...${connectedAccount.slice(-4)}`;
-  connectWalletBtn.onclick = disconnectWallet;
-
-}
-
-connectWalletBtn.onclick = connectWallet;
-checkPreviousConnection();
 
 
 const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrl));

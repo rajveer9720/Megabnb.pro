@@ -52,9 +52,28 @@
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item dropdown">
                             <a href="https://bscscan.com/address/0x22B9d593eEaaAC4DA6eB7B48C05ceAe34cCDda3E#code" class="theme-btn">Smart Contract</a>
-                            <button id="connectWalletBtn" class="theme-btn">
+                            <button id="connectWalletBtn" class="theme-btn ">
                                 <span id="walletAddress">Connect Wallet</span>
                               </button>
+                              <div id="walletModal" class="modal">
+                                <div class="modal-content">
+                                    <span id="close-popup" class="close">&times;</span>
+                                    <div id="metamaskOption" class="wallet-option">
+                                        <img src="/assets/img/metamask.svg" alt="MetaMask">
+                                        <div>
+                                            <p>MetaMask</p>
+                                            <span>Connect to your MetaMask Wallet</span>
+                                        </div>
+                                    </div>
+                                    <div id="walletConnectOption" class="wallet-option">
+                                        <img src="/assets/img/wallet connect.svg" alt="WalletConnect">
+                                        <div>
+                                            <p>WalletConnect</p>
+                                            <span>Scan with WalletConnect to connect</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- <button class="theme-btn">Connect wallet</button> -->
                             <a href=""><img src="/assets/img/telegram.svg" alt=""></a>
                             <!-- Add dropdown content here if needed -->
