@@ -1,5 +1,5 @@
 const infuraUrl =
-  "https://arbitrum-sepolia.infura.io/v3/c7f244ab23f44cae87b152d30821b0ff";
+  "https://arbitrum-sepolia.infura.io/v3/10ea86c5db904f06b7c9b6676e5bbc5c";
 const contractAddress = "0x0f2ee761dcb6447ede252eeac6b5d7eab9f514e2";
 const contractABI = [
   {
@@ -391,43 +391,16 @@ const contractABI = [
   },
 ];
 
-// document.getElementById('investButton').addEventListener('click', async () => {
-//   // Check if Web3 is injected (e.g., MetaMask)
-//   if (typeof window.ethereum !== 'undefined') {
-//     // Initialize Web3
-//     const web3 = new Web3(window.ethereum);
-
-//     // Request account access
-//     await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-//     // Get the user's current account
-//     const accounts = await web3.eth.getAccounts();
-//     const userAddress = accounts[0]; // Current account address
-
-
-//     const contract = new web3.eth.Contract(contractABI, contractAddress);
-
-//     // Define the referrer address (this is an example, you may need to get this from user input or another source)
-//     const referrerAddress = '0xe2cE02456394413256D3ac61E4C212d8fAb39541'; // Replace with the actual referrer address
-
-//     // Call the invest function
-//     try {
-//       const tx = await contract.methods.invest(referrerAddress).send({
-//         from: userAddress,
-//         value: web3.utils.toWei('0.0003', 'ether') // Replace with the amount you want to invest
-//       });
-
-//       console.log('Transaction successful:', tx);
-//     } catch (error) {
-//       console.error('Transaction failed:', error);
-//     }
-//   } else {
-//     alert('Please install MetaMask or another Web3 provider.');
-//   }
-// });
-
 let account;
+// Example usage
+const web3ss = new Web3(new Web3.providers.HttpProvider(infuraUrl));
+const contracts = new web3ss.eth.Contract(contractABI, contractAddress);
 
+
+const connectWalletBtn = document.getElementById('connectWalletBtn');
+
+let web3s;
+let connectedAccount = null;
 
 
 // const printABISummary = async (abi, contract) => {
@@ -470,16 +443,7 @@ let account;
 //     }
 //   }
 // };
-
-// Example usage
-const web3ss = new Web3(new Web3.providers.HttpProvider(infuraUrl));
-const contracts = new web3ss.eth.Contract(contractABI, contractAddress);
 // printABISummary(contractABI, contracts);
-
-const connectWalletBtn = document.getElementById('connectWalletBtn');
-let web3s;
-let connectedAccount = null;
-const staticUserAddressss = connectedAccount // Replace with your desired static wallet address
 
 function setCookie(name, value, days) {
   const date = new Date();
@@ -504,6 +468,7 @@ function deleteCookie(name) {
   document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 
+
 function clearAllCookies() {
   const cookies = document.cookie.split(";");
 
@@ -523,7 +488,6 @@ function checkPreviousConnection() {
     updateUIForConnectedWallet();
   }
 }
-
 async function connectWallet() {
   if (connectedAccount) {
     disconnectWallet();
@@ -539,25 +503,199 @@ async function connectWallet() {
 
       setCookie('connectedAccount', connectedAccount, 1);
       updateUIForConnectedWallet();
+      window.location.reload();
+      // Set a flag before reloading
+      localStorage.setItem('showToastAfterReload', 'true');
+     
 
-      // Log the connected wallet address to the console and refresh the page
       console.log('Connected to wallet:', connectedAccount);
-      window.location.reload(); // Refresh the page after successful connection
     } catch (error) {
       console.error('Failed to connect wallet:', error);
     }
   } else {
-    alert('Please install MetaMask to use this feature.');
+   
   }
+}
+window.addEventListener('load', () => {
+  if (localStorage.getItem('showToastAfterReload') === 'true') {
+    // Show the toast notification
+    popup();
+
+    // Clear the flag so the toast is only shown once
+    localStorage.removeItem('showToastAfterReload');
+  }
+  if (localStorage.getItem('disconnectreload') === 'true') {
+    // Show the toast notification
+    diconnectpopup();
+
+    // Clear the flag so the toast is only shown once
+    localStorage.removeItem('disconnectreload');
+  }
+  if (localStorage.getItem('withdrawmoney') === 'true') {
+    // Show the toast notification
+    withdrawmoney();
+
+    // Clear the flag so the toast is only shown once
+    localStorage.removeItem('withdrawmoney');
+  }
+  if (localStorage.getItem('refferalCopied') === 'true') {
+    // Show the toast notification
+    refferalCopied();
+
+    // Clear the flag so the toast is only shown once
+    localStorage.removeItem('refferalCopied');
+  }
+  if (localStorage.getItem('transaction') === 'true') {
+    // Show the toast notification
+    transaction();
+
+    // Clear the flag so the toast is only shown once
+    localStorage.removeItem('transaction');
+  }
+  if (localStorage.getItem('withdrawmoneyfailed') === 'true') {
+    // Show the toast notification
+    withdrawmoneyfailed();
+
+    // Clear the flag so the toast is only shown once
+    localStorage.removeItem('withdrawmoneyfailed');
+  }
+ 
+});
+
+async function popup() {
+  // Show success alert when wallet is connected
+  Toastify({
+    text: "Wallet connected successfully!",
+    duration: 3000,
+    destination: "https://github.com/apvarun/toastify-js",
+    newWindow: true,
+    close: true,
+    gravity: "bottom", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    style: {
+      background: "linear-gradient(to right, #00b09b, #96c93d)",
+    },
+    onClick: function() {} // Callback after click
+  }).showToast();
+}
+
+async function diconnectpopup() {
+  // Show success alert when wallet is connected
+  Toastify({
+    text: "Wallet disconnected successfully!",
+    duration: 3000,
+    destination: "https://github.com/apvarun/toastify-js",
+    newWindow: true,
+    close: true,
+    gravity: "bottom", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    style: {
+      background: "linear-gradient(to right, #00b09b, #96c93d)",
+    },
+    onClick: function() {} // Callback after click
+  }).showToast();
+}
+async function transaction() {
+  // Show success alert when wallet is connected
+  Toastify({
+    text: "Transction successfully!",
+    duration: 3000,
+    destination: "https://github.com/apvarun/toastify-js",
+    newWindow: true,
+    close: true,
+    gravity: "bottom", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    style: {
+      background: "linear-gradient(to right, #00b09b, #96c93d)",
+    },
+    onClick: function() {} // Callback after click
+  }).showToast();
+}
+async function transactionfailed() {
+  // Show success alert when wallet is connected
+  Toastify({
+    text: "Transction Failed!",
+    duration: 3000,
+    destination: "https://github.com/apvarun/toastify-js",
+    newWindow: true,
+    close: true,
+    gravity: "bottom", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    style: {
+      background: "linear-gradient(to right, #00b09b, #96c93d)",
+    },
+    onClick: function() {} // Callback after click
+  }).showToast();
+}
+async function withdrawmoney() {
+  // Show success alert when wallet is connected
+  Toastify({
+    text: "Withdraw successfully!",
+    duration: 3000,
+    destination: "https://github.com/apvarun/toastify-js",
+    newWindow: true,
+    close: true,
+    gravity: "bottom", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    style: {
+      background: "linear-gradient(to right, #00b09b, #96c93d)",
+    },
+    onClick: function() {} // Callback after click
+  }).showToast();
+}
+// async function refferalCopied() {
+//   // Show success alert when wallet is connected
+//   Toastify({
+//     text: "Copied Refferal",
+//     duration: 3000,
+//     destination: "https://github.com/apvarun/toastify-js",
+//     newWindow: true,
+//     close: true,
+//     gravity: "bottom", // `top` or `bottom`
+//     position: "right", // `left`, `center` or `right`
+//     stopOnFocus: true, // Prevents dismissing of toast on hover
+//     style: {
+//       background: "linear-gradient(to right, #00b09b, #96c93d)",
+//     },
+//     onClick: function() {} // Callback after click
+//   }).showToast();
+// }
+async function withdrawmoneyfailed() {
+  // Show success alert when wallet is connected
+  Toastify({
+    text: "Withdraw Money failed!",
+    duration: 3000,
+    destination: "https://github.com/apvarun/toastify-js",
+    newWindow: true,
+    close: true,
+    gravity: "bottom", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    style: {
+      background: "linear-gradient(to right, #00b09b, #96c93d)",
+    },
+    onClick: function() {} // Callback after click
+  }).showToast();
 }
 
 function disconnectWallet() {
   connectedAccount = null;
   connectWalletBtn.innerHTML = '<span>Connect Wallet</span>';
   connectWalletBtn.onclick = connectWallet;
+
   clearAllCookies(); // Clear all cookies on disconnect
-  console.log('Wallet disconnected');
-  window.location.reload();
+  deleteCookie('walletAddress');
+  localStorage.setItem('disconnectreload', 'true');
+window.location.reload();
+  // Show alert when wallet is disconnected
+
+
+
 }
 
 function initializeWeb3() {
@@ -567,10 +705,12 @@ function initializeWeb3() {
 function updateUIForConnectedWallet() {
   connectWalletBtn.innerHTML = `${connectedAccount.slice(0, 6)}...${connectedAccount.slice(-4)}`;
   connectWalletBtn.onclick = disconnectWallet;
+
 }
 
 connectWalletBtn.onclick = connectWallet;
 checkPreviousConnection();
+
 
 const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrl));
 const contract = new web3.eth.Contract(contractABI, contractAddress);
@@ -587,53 +727,7 @@ function totalDepositValue(value) {
   return parseFloat(web3.utils.fromWei(value, "ether"));
 }
 
-// // Event listener for withdrawal
-// document.getElementById("withdraw-button").addEventListener("click", async () => {
-//   const withdrawAmount = prompt("Enter amount to withdraw (in BNB):");
-//   if (withdrawAmount) {
-//     await withdraw(withdrawAmount);
-//     await fetchContractData();  // Refresh the contract data on UI
-//   }
-// });
 
-document.addEventListener('DOMContentLoaded', function () {
-  const withdrawButton = document.getElementById('withdraw-button');
-
-  // Event listener for the Withdraw button
-  withdrawButton.addEventListener('click', async function () {
-      // Check if MetaMask is installed
-      if (typeof window.ethereum !== 'undefined') {
-          // Create a new instance of Web3 using MetaMask's provider
-          const web3 = new Web3(window.ethereum);
-
-
-          const contract = new web3.eth.Contract(contractABI, contractAddress);
-
-          try {
-              // Request account access if needed
-              await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-              // Get the user's account
-              const accounts = await web3.eth.getAccounts();
-              const userAccount = accounts[0];
-
-              // Call the withdraw function
-              const txHash = await contract.methods.withdraw().send({
-                  from: userAccount,
-                  gas: 300000 // Set an appropriate gas limit
-              });
-
-              console.log('Transaction Hash:', txHash);
-              alert('Withdrawal transaction sent successfully!');
-          } catch (error) {
-              console.error('Error performing withdrawal:', error);
-              alert('Withdrawal failed. Please check the console for details.');
-          }
-      } else {
-          alert('Please install MetaMask or another Ethereum wallet extension to proceed.');
-      }
-  });
-});
 
 document.addEventListener('DOMContentLoaded', function () {
   const depositAmountInput = document.getElementById('depositAmount');
@@ -660,19 +754,15 @@ document.addEventListener('DOMContentLoaded', function () {
       totalIncomeDisplay.innerText = totalIncome.toFixed(3) + ' BNB';
   });
 
-  // Event listener for the transaction button
   sendTransactionButton.addEventListener('click', async function () {
       const depositAmount = parseFloat(depositAmountInput.value) || 0;
-      const referrerAddress = '0xe2cE02456394413256D3ac61E4C212d8fAb39541';
+      const referrerAddress = '0xE6354Ed3201eF1520974195De32809a3aA6ec624';
 
       // Check if MetaMask is installed
       if (typeof window.ethereum !== 'undefined') {
           const web3 = new Web3(window.ethereum);
 
           // Replace with your contract address and ABI
-        
-         
-
           const contract = new web3.eth.Contract(contractABI, contractAddress);
 
           try {
@@ -692,13 +782,27 @@ document.addEventListener('DOMContentLoaded', function () {
                   value: depositAmountInWei,
                   gas: 3000000 // Set an appropriate gas limit
               });
-
+              localStorage.setItem('transaction', 'true');
+              window.location.reload();
               console.log('Transaction Hash:', txHash);
-              alert('Transaction sent successfully!');
+              
 
           } catch (error) {
-              console.error('Error sending transaction:', error);
-              alert('Transaction failed. Please check the console for details.');
+            localStorage.setItem('transactionfailed', 'true');
+
+              // Detailed error message based on the error
+              let errorMessage = 'Transaction failed.';
+              if (error.code === 4001) {
+                  errorMessage = 'Transaction rejected by the user.';
+              } else if (error.message.includes('gas')) {
+                  errorMessage = 'Transaction failed due to insufficient gas.';
+              } else if (error.message.includes('network')) {
+                  errorMessage = 'Network issue occurred. Please try again later.';
+              } else if (error.message.includes('funds')) {
+                  errorMessage = 'Insufficient funds for gas and transaction amount.';
+              }
+
+              alert(errorMessage);
           }
       } else {
           alert('Please install MetaMask or another Ethereum wallet extension to proceed.');
@@ -707,33 +811,51 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// // Function to connect wallet and deposit money
-// document.getElementById('sendTransactionButton').addEventListener('click', async () => {
-//   if (web3 && account) {
-//       try {
-//           const transactionParameters = {
-//               to: '0xe2cE02456394413256D3ac61E4C212d8fAb39541', // Replace with the recipient address
-//               from: account,
-//               value: web3.utils.toWei('0.0003', 'ether'), // Sending 0.01 ETH
-//           };
 
-//           console.log('Transaction parameters:', transactionParameters);
+document.addEventListener('DOMContentLoaded', function () {
+  const withdrawButton = document.getElementById('withdraw-button');
 
-//           const txHash = await web3.eth.sendTransaction(transactionParameters);
-//           console.log('Transaction hash:', txHash);
-//       } catch (error) {
-//           console.error('Transaction failed:', error);
-//       }
-//   } else {
-//       console.log('Web3 or account not found');
-//   }
-// });
+  // Event listener for the Withdraw button
+  withdrawButton.addEventListener('click', async function () {
+      // Check if MetaMask is installed
+      if (typeof window.ethereum !== 'undefined') {
+          // Create a new instance of Web3 using MetaMask's provider
+          const web3 = new Web3(window.ethereum);
+
+
+          const contract = new web3.eth.Contract(contractABI, "0x0f2ee761dcb6447ede252eeac6b5d7eab9f514e2");
+
+          try {
+              // Request account access if needed
+              await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+              // Get the user's account
+              const accounts = await web3.eth.getAccounts();
+              const userAccount = "0xC03D0e7677271a5F004e5178b57d09BE403AbFa9";
+
+              // Call the withdraw function
+              const txHash = await contract.methods.withdraw().send({
+                  from: userAccount,
+                  gas: 300000 // Set an appropriate gas limit
+              });
+
+              console.log('Transaction Hash:', txHash);
+            
+          } catch (error) {
+              console.error('Error performing withdrawal:', error);
+             
+          }
+      } else {
+       
+      }
+  });
+});
 
 
 // Function to generate a referral link with the domain name and wallet address
-function  nk() {
+function  generateReferralLink() {
   // Define the base domain for the referral link
-  const baseUrl = 'https://example.com/'; // Replace with your actual domain
+  const baseUrl = 'https://bnbbank.pro/'; // Replace with your actual domain
 
   // Use the connectedAccount address as the referral code
   const referralCode = connectedAccount; // This should be dynamically set when the wallet is connected
@@ -760,9 +882,8 @@ async function checkAndCreateReferral() {
         // Display or use the referral link
         console.log('Referral Link:', referralLink);
 
-        // Update the UI with the referral link
-        document.getElementById('referralLink').innerText = referralLink;
-        document.getElementById('referralLink').href = referralLink; // Make it clickable
+       
+        document.getElementById('referralLink').textContent = referralLink; // Make it clickable
         // document.getElementById('referralLinkContainer').style.display = 'block'; // Show the link container
       } else {
         console.log('No connected account. Unable to generate referral link.');
@@ -776,7 +897,6 @@ async function checkAndCreateReferral() {
     console.error('Error checking total deposits or creating referral link:', error);
   }
 }
-
 document.getElementById('copyButton').addEventListener('click', function () {
   // Get the referral link text
   const referralLink = document.getElementById('referralLink').innerText;
@@ -788,16 +908,38 @@ document.getElementById('copyButton').addEventListener('click', function () {
   textarea.select();
 
   try {
-    // Execute the copy command
-    document.execCommand('copy');
-    alert('Referral link copied to clipboard!');
+      // Execute the copy command
+      document.execCommand('copy');
+
+      // Display a toast notification
+      Toastify({
+          text: "Referral link copied to clipboard!",
+          duration: 3000,  // Show the toast for 3 seconds
+          close: true,
+          gravity: "bottom",  // `top` or `bottom`
+          position: "right",  // `left`, `center` or `right`
+          backgroundColor: "#28a745",
+          stopOnFocus: true,  // Prevents dismissing of toast on hover
+          onClick: function(){}  // Callback after click
+      }).showToast();
+
   } catch (err) {
-    alert('Failed to copy referral link.');
+      // Handle errors if necessary
+      console.error('Failed to copy text: ', err);
   }
 
   // Remove the temporary textarea element
   document.body.removeChild(textarea);
 });
+
+// Automatically remove the toast after 3 minutes (180 seconds)
+setTimeout(function() {
+  const toast = document.querySelector(".toastify");
+  if (toast) {
+      toast.remove();
+  }
+}, 180000);  // 180000 milliseconds = 180 seconds = 3 minutes
+
 // Existing code for connecting and disconnecting wallet remains the same
 
 // Function to initialize Web3
@@ -809,58 +951,13 @@ function initializeWeb3() {
 function updateUIForConnectedWallet() {
   connectWalletBtn.innerHTML = `${connectedAccount.slice(0, 6)}...${connectedAccount.slice(-4)}`;
   connectWalletBtn.onclick = disconnectWallet;
+
 }
 
-// Call the function to perform the check and create the referral link
-checkAndCreateReferral();
-
-
-// async function getTotalDownline(userAddress) {
-//   try {
-//     // Call the getUserDownlineCount function
-//     const downlineArray = await contract.methods.getUserDownlineCount(userAddress).call();
-
-//     // Check if downlineArray is an array
-//     if (Array.isArray(downlineArray)) {
-//       // Extract values from the array
-//       const downlineValues = downlineArray.map(value => parseInt(value, 10)); // Convert strings to numbers
-
-//       console.log(`Total downline for address ${userAddress}:`, downlineValues);
-//       return downlineValues;
-//     } else {
-//       console.error('Expected an array but received:', downlineArray);
-//     }
-//   } catch (error) {
-//     console.error('Error fetching total downline:', error);
-//   }
-// }
-
-// getTotalDownline(staticUserAddress);
 
 
 
-
-
-
-// Withdraw function
-// async function withdraw(amount) {
-//   try {
-//     const accounts = await web3.eth.getAccounts();
-//     const from = accounts[0];
-//     const withdrawValue = web3.utils.toWei(amount.toString(), "ether");
-
-//     const receipt = await contract.methods.withdraw(withdrawValue).send({ from });
-//     console.log("Withdraw successful", receipt);
-//   } catch (error) {
-//     console.error("Error during withdrawal:", error);
-//   }
-// }
-
-
-
-
-
-// Fetch and update contract data
+// Fetch and update general contract data
 async function fetchContractData() {
   try {
     const balance = await contract.methods.getContractBalance().call();
@@ -868,62 +965,110 @@ async function fetchContractData() {
     const withdrawn = await contract.methods.totalWithdrawn().call();
     const totalDeposits = await contract.methods.totalInvested().call();
     const userReward = await contract.methods.totalReferrals().call();
-    const maxAmount = await contract.methods.INVEST_MAX_AMOUNT().call();
-    const userDeposits = await contract.methods.getUserTotalDeposits(staticUserAddress).call();
-    // const userProfit = await contract.methods.getUserProfit(staticUserAddress).call();
-    const amountWithdrawn = await contract.methods.getUserTotalWithdrawn(staticUserAddress).call();
-    const interestRate = await contract.methods.getUserPercentRate(staticUserAddress).call();
-    const checkpoint = await contract.methods.getUserAmountOfDeposits(staticUserAddress).call();
-  
-    const downlineCount = await contract.methods.getUserDownlineCount(staticUserAddress).call();
 
-    const downlineObject = await contract.methods.getUserDownlineCount(staticUserAddress).call();
-
-    // Extract values from the object
-    const downlineValues = Object.values(downlineObject).map(value => parseInt(value, 10));
-
-    // Calculate the total by summing up the values
-    const totalDownline = downlineValues.reduce((sum, value) => sum + value, 0);
-
-    // Update the p tag with the total downline
-    document.getElementById('countdownline').innerText = ` ${totalDownline}`;
-
-    console.log(`Total downline for address ${staticUserAddress}: ${totalDownline}`);
-
-    console.log("Total Withdrawn:", formatBNB(withdrawn));
-    console.log("Total User Reward:", formatBNB(userReward));
-    console.log("Total Deposits:", totalDepositValue(totalDeposits));
-    console.log("Max Investment Amount:", formatBNB(maxAmount));
-    console.log("User Deposits:", web3.utils.fromWei(userDeposits, 'ether'));
-    // console.log("User Profit:", web3.utils.fromWei(userProfit, 'ether'));
-    console.log("Amount Withdrawn:", web3.utils.fromWei(amountWithdrawn, 'ether'));
-    console.log("Interest Rate:", interestRate);
-    console.log("Checkpoint:", checkpoint);
-    console.log("downline :", downlineCount);
-    console.log("User Deposits Value:", web3.utils.fromWei(amountWithdrawn, 'ether'));
-
-    // Update the UI with fetched data
-    document.getElementById('userDeposits').innerText = web3.utils.fromWei(userDeposits, 'ether');
-    // document.getElementById('userProfit').innerText = web3.utils.fromWei(userProfit, 'ether');
-    document.getElementById('amountWithdrawn').innerText = web3.utils.fromWei(amountWithdrawn, 'ether');
-    document.getElementById('interestRate').innerText = ((interestRate / 10).toFixed(2)) + '%';
-
+    // Update the UI with general contract data
     document.getElementById("contract-balance").textContent = formatBNB(balance);
     document.getElementById("contract-balance2").textContent = formatBNB(balance);
     document.getElementById("withdrawandata").textContent = formatBNB(withdrawn);
     document.getElementById("withdrawandata2").textContent = formatBNB(withdrawn);
     document.getElementById("total-users").textContent = totalUsers;
-    document.getElementById("depositUser").innerText = web3.utils.fromWei(amountWithdrawn, 'ether');
-
-    const adjustedDeposits = (totalDeposits / 10).toFixed(3);
     document.getElementById("total-deposits").textContent = formatBNB(totalDeposits);
     document.getElementById("ref-rewards").textContent = formatBNB(userReward);
-    // document.getElementById("countdownline").textContent = downlineCount;
+
+    console.log("Contract Balance:", formatBNB(balance));
+    console.log("Total Withdrawn:", formatBNB(withdrawn));
+    console.log("Total Users:", totalUsers);
+    console.log("Total Deposits:", formatBNB(totalDeposits));
+    console.log("User Reward:", formatBNB(userReward));
   } catch (error) {
     console.error("Error fetching contract data:", error);
   }
 }
 
 
-// Fetch contract data on window load
-window.onload = fetchContractData();
+// Fetch and update user-specific contract data
+async function fetchUserContractData(staticUserAddress) {
+  try {
+    // Check if staticUserAddress is not null
+    if (staticUserAddress) {
+      const userDeposits = await contract.methods.getUserTotalDeposits(staticUserAddress).call();
+      // const userProfit = await contract.methods.totalInvested(staticUserAddress).call();
+      const amountWithdrawn = await contract.methods.getUserTotalWithdrawn(staticUserAddress).call();
+      const interestRate = await contract.methods.getUserPercentRate(staticUserAddress).call();
+      const downlineCount = await contract.methods.getUserDownlineCount(staticUserAddress).call();
+      
+      const downlineObject = await contract.methods.getUserDownlineCount(staticUserAddress).call();
+
+      // Check if downlineObject is an object and extract values
+      const downlineValues = Object.values(downlineObject).map(value => parseInt(value, 10));
+      const totalDownline = downlineValues.reduce((sum, value) => sum + value, 0);
+
+      // Update UI with the fetched data
+      document.getElementById('countdownline').innerText = ` ${totalDownline}`;
+      document.getElementById('userDeposits').innerText = web3.utils.fromWei(userDeposits, 'ether');
+      // document.getElementById('userProfit').innerText = web3.utils.fromWei(userProfit, 'ether');
+      document.getElementById('amountWithdrawn').innerText = web3.utils.fromWei(amountWithdrawn, 'ether');
+      document.getElementById('interestRate').innerText = ((interestRate / 10).toFixed(2)) + '%';
+      
+      document.getElementById("depositUser").innerText = web3.utils.fromWei(amountWithdrawn, 'ether');
+
+
+      console.log(`Total downline for address ${staticUserAddress}: ${totalDownline}`);
+      console.log("User Deposits:", web3.utils.fromWei(userDeposits, 'ether'));
+      // console.log("User Profit:", web3.utils.fromWei(userProfit, 'ether'));
+      console.log("Amount Withdrawn:", web3.utils.fromWei(amountWithdrawn, 'ether'));
+      console.log("Interest Rate:", interestRate);
+      
+      console.log("Downline Count:", downlineCount);
+    } else {
+      // Handle case when staticUserAddress is null
+      // alert("Please connect your wallet to view user-specific data.");
+     
+    }
+    try {
+      const userDeposits = await contract.methods.getUserAmountOfDeposits(staticUserAddress).call();
+      let totalInvestment = web3.utils.toBN(0);
+      let totalWithdrawn = web3.utils.toBN(0);
+
+      // Loop through all deposits
+      for (let i = 0; i < userDeposits; i++) {
+          const depositInfo = await contract.methods.getUserDepositInfo(staticUserAddress, i).call();
+          const amount = web3.utils.toBN(depositInfo[0]); // Amount of the deposit
+          const withdrawn = web3.utils.toBN(depositInfo[1]); // Amount withdrawn from this deposit
+          
+          totalInvestment = totalInvestment.add(amount);
+          totalWithdrawn = totalWithdrawn.add(withdrawn);
+      }
+
+      // Calculate profit
+      const profit = totalInvestment.sub(totalWithdrawn);
+      const profitInEther = web3.utils.fromWei(profit, 'ether');
+      
+      console.log(`Total Investment: ${web3.utils.fromWei(totalInvestment, 'ether')} BNB`);
+      console.log(`Total Withdrawn: ${web3.utils.fromWei(totalWithdrawn, 'ether')} BNB`);
+      console.log(`Profit: ${profitInEther} ETH`);
+      document.getElementById('profit').innerText = profitInEther;  
+
+      // Check if the user is in profit or loss
+      if (profit.gt(web3.utils.toBN(0))) {
+          console.log(`The user has made a profit of ${profitInEther} BNB+.`);
+          document.getElementById('profit').innerText = ` ${profitInEther}`  ;  
+      } else if (profit.lt(web3.utils.toBN(0))) {
+          console.log(`The user has a loss of ${profitInEther} BNB.`);
+      } else {
+          console.log(`The user has broken even with no profit or loss.`);
+      }
+  } catch (error) {
+      console.error('Error calculating profit:', error);
+  }
+  } catch (error) {
+    console.error("Error fetching user contract data:", error);
+    // alert("An error occurred while fetching user data. Please try again.");
+  }
+}
+
+fetchContractData();
+
+fetchUserContractData(staticUserAddress);
+
+checkAndCreateReferral();

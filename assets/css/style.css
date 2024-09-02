@@ -116,7 +116,9 @@ p {
   transition: all 0.3s ease-out 0s;
   height: auto;
 }
-
+h4{
+  color: white  ;
+}
 label {
   color: #999;
   cursor: pointer;
@@ -800,6 +802,10 @@ nav menu css
 
   .navbar .nav-item .dropdown-menu li {
     border-bottom: 1px solid rgba(255, 255, 255, .15);
+    display: flex;
+    gap: 15px;
+    margin-top: 5px;
+}
   }
 
   .navbar .nav-item .dropdown-menu li:last-child {
@@ -911,7 +917,6 @@ nav menu css
   }
 
 
-}
 
 /*bootstrap menu*/
 
@@ -1034,8 +1039,28 @@ button.navbar-toggler:focus {
     overflow: hidden;
     overflow-y: auto;
     padding: 0 20px;
-    background-color: #fff;
+  
   }
+  /* Hide elements on mobile */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 767px) {
+  .desktop-only {
+      display: none;
+  }
+
+  .mobile-only {
+      display: block;
+  }
+}
+xx
 
   .dropdown-toggle::after {
     float: right;
@@ -1932,7 +1957,7 @@ road map css
   position: absolute;
   right: 0;
   left: 0;
-  bottom: 80px;
+  bottom: 20px;
   margin: 0 auto;
   z-index: 8;
   border-radius: 100%;
@@ -2004,7 +2029,34 @@ road map css
   margin-right: 20px;
   border-radius: 8px;
   box-shadow: 0 0 40px 5px rgb(0 0 0 / 5%);
+  display: flex;
+  justify-content: space-around;
 }
+/* CSS for mobile view */
+@media (max-width: 991.98px) {
+  .header-nav-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+  }
+
+  .header-btn {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+  }
+
+  .header-btn .theme-btn {
+      width: 100%;
+      text-align: center;
+  }
+
+  .navbar-collapse {
+      text-align: center;
+  }
+}
+
 
 .road-map-item-content h5 {
   margin: 0;
@@ -2612,7 +2664,7 @@ choose css
 }
 
 .choose-item-img img {
-  width: 65px;
+  width: 25px;
 }
 
 .choose-item h5 {
@@ -4975,6 +5027,12 @@ home 5
   }
 
 }
+.nav-item{
+  display: flex;
+    gap: 15px;
+    margin-top: 5px;
+}
+
 
 
 @media all and (max-width: 991px) {
@@ -5021,6 +5079,7 @@ home 5
   font-weight: bold;
   opacity: 0.8;
   text-align: center;
+  color: white;
 }
 
 .value {
@@ -5028,6 +5087,7 @@ home 5
   font-weight: bold;
   color: #f7bd7b;
   text-align: center;
+  color: white !important;
 }
 
 /* Responsive styles */
@@ -5043,7 +5103,7 @@ home 5
 @media (min-width: 768px) {
   .card {
       width: 80%;
-      max-width: 500px;
+      max-width: 600px;
     
   }
 
@@ -5067,6 +5127,116 @@ home 5
   color: #fff; /* White text color */
   text-align: center;
 }
+.section-title {
+  font-size: 2.5rem;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  color: #f0f0f0;
+}
+
+.make-new {
+  background-color: #16113a; /* Slightly lighter blue for the section background */
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.makedeposit {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #c0c0c0;
+}
+
+.deposit-input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.deposit-input input[type="number"] {
+  width: 100px;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #444;
+  border-radius: 5px;
+  background-color: #2d2a48;
+  color: #fff;
+  font-size: 1rem;
+  text-align: right;
+}
+
+.deposit-button {
+  background-color: #1e90ff; /* Bright blue button color */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.deposit-button:hover {
+  background-color: #1c7ed6; /* Darker blue on hover */
+}
+
+.deposit-limits {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.min-limit,
+.max-limit {
+  display: block;
+  margin-top: 5px;
+}
+
+.per-day,
+.percent-rate,
+.total-income {
+  background: linear-gradient(to right, #0093E9, #80D0C7); /* Gradient background */
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px;
+  width: 100px;
+  display: inline-block;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.footer-note {
+  font-size: 0.8rem;
+  margin-top: 20px;
+  color: #ccc;
+}
+
+.referral-link{
+font-size: 12px !important;
+}
+/* Responsive styles for smaller screens */
+@media (max-width: 480px) {
+  .referral-link {
+      flex-direction: column; /* Stack text and button vertically */
+      align-items: stretch; /* Align to container width */
+      font-size: 12px !important;
+  }
+
+  #referralLink {
+      margin-bottom: 10px; /* Space between link and button when stacked */
+      text-align: center; /* Center text when on a new line */
+      font-size: 12px !important;
+
+  }
+
+  #copyButton {
+      width: 100%; /* Button takes full width on small screens */
+  }
+}
+
 
 .section-title {
   font-size: 1.5rem;
@@ -5262,4 +5432,74 @@ home 5
 }
 .makedeposit{
   color: white;
+}
+
+.card {
+  background: linear-gradient(to right, #0063E2 0%, #00ADFF 51%, #0063E2 100%);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  color: #333;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.value {
+  font-size: 18px;
+  color: #333;
+}
+
+.referral-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.referral-link input {
+  border: none;
+  outline: none;
+  background: none;
+  flex-grow: 1;
+  font-size: 14px;
+}
+
+.copy-btn {
+  background-color: #5fc3e4;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reward, .referral {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reward .value, .referral .value {
+  font-size: 22px;
+  font-weight: bold;
+  color: #000;
 }
