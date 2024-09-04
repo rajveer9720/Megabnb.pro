@@ -782,40 +782,56 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Event listener for the Withdraw button
   withdrawButton.addEventListener('click', async function () {
+      console.log('Withdraw button clicked.');
+
       // Check if MetaMask is installed
       if (typeof window.ethereum !== 'undefined') {
-          // Create a new instance of Web3 using MetaMask's provider
-          const web3 = new Web3(window.ethereum);
-
-
-          const contract = new web3.eth.Contract(contractABI, "0x0f2ee761dcb6447ede252eeac6b5d7eab9f514e2");
+          console.log('MetaMask is installed.');
 
           try {
+              // Create a new instance of Web3 using MetaMask's provider
+              const web3 = new Web3(window.ethereum);
+              console.log('Web3 instance created.');
+
+           
+              console.log('Contract ABI and address set.');
+
+              // Convert the contract address to checksum format without reassigning it
+              const checksumAddress = web3.utils.toChecksumAddress(contractAddress);
+              console.log('Checksum contract address:', checksumAddress);
+
+              // Create contract instance
+              const contract = new web3.eth.Contract(contractABI, checksumAddress);
+              console.log('Contract instance created:', contract);
+
               // Request account access if needed
               await window.ethereum.request({ method: 'eth_requestAccounts' });
+              console.log('Account access requested.');
 
               // Get the user's account
               const accounts = await web3.eth.getAccounts();
-              const userAccount = "0xC03D0e7677271a5F004e5178b57d09BE403AbFa9";
+              console.log('Accounts fetched:', accounts);
+
+              const userAccount = web3.utils.toChecksumAddress(accounts[0]);
+              console.log('Using account:', userAccount);
 
               // Call the withdraw function
               const txHash = await contract.methods.withdraw().send({
                   from: userAccount,
-                  gas: 300000 // Set an appropriate gas limit
+                  gas: 3000000
+                  // Set an appropriate gas limit
               });
 
               console.log('Transaction Hash:', txHash);
-            
+
           } catch (error) {
               console.error('Error performing withdrawal:', error);
-             
           }
       } else {
-       
+          console.error('MetaMask is not installed.');
       }
   });
 });
-
 
 // Function to generate a referral link with the domain name and wallet address
 function  generateReferralLink() {
