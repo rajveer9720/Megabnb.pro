@@ -1,5 +1,5 @@
 const infuraUrl =
-  "https://arbitrum-sepolia.infura.io/v3/10ea86c5db904f06b7c9b6676e5bbc5c";
+  "";
 const contractAddress = "0x0f2ee761dcb6447ede252eeac6b5d7eab9f514e2";
 const contractABI = [
   {
